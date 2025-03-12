@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostAuth\PostAuth;
+use App\Http\Requests\PostAuth\PostLogout;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\HttpResponseHelper;
@@ -38,7 +39,7 @@ class AuthController extends Controller
         }
     }
 
-    public function logout(PostAuth $request) 
+    public function logout(PostLogout $request) 
     {
         try {
             $user = $request->user();
