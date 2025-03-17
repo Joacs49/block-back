@@ -20,13 +20,15 @@ Route::controller(UserController::class)->prefix('user')->group(function () {
 });
 
 Route::controller(NoticesController::class)->prefix('notices')->group(function (){
+    Route::get('/showNoticesAll', 'showNoticesAll');
+
     Route::group(['middleware' => ['auth:sanctum','role:ADMIN','permission:ENVIAR']], function (){
         Route::get('/showNotices', 'showNotices');
         Route::get('/showLastNotices','showLastNotices');
         Route::get('/countNotices','countNotices');
         Route::post('/createNotices','createNotices');
-        Route::put('/updateNotices/{notices}','updateNotices');
-        Route::delete('/destroyNotices/{notices}', 'destroyNotices');
+        Route::put('/updateNotices/{id}','updateNotices');
+        Route::delete('/destroyNotices/{id}', 'destroyNotices');
     });
 });
 

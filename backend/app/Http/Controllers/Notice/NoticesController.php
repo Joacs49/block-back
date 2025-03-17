@@ -49,7 +49,7 @@ class NoticesController extends Controller
     public function showNotices()
     {
         try {
-            $noticeList = Notices::select("title","fechaPublicacion")->paginate(4);
+            $noticeList = Notices::select("id_notice", "title","fechaPublicacion")->paginate(4);
 
             return HttpResponseHelper::make()
             ->successfulResponse(
@@ -65,13 +65,37 @@ class NoticesController extends Controller
         }
     }
 
-    public function updateNotices(PostNotices $request, Notices $notices)
+    public function showNoticesAll()
     {
-         try {
-            $notices->update($request->all());
+        try {
+            $noticeList = Notices::select("title","paragraph","img","url")->get();
 
             return HttpResponseHelper::make()
-            ->successfulResponse($notices->wasChanged() ? 
+            ->successfulResponse(
+                $noticeList->isEmpty() ? 'No se encontraron noticias.' : 
+                'Noticas obtenidas correctamente.', $noticeList->toArray()
+            )
+            ->send();
+
+        } catch(\Exception $e) {
+            return HttpResponseHelper::make()
+            ->internalErrorResponse('Ocurrio un problema.' . $e->getMessage())
+            ->send();
+        }
+    }
+
+    public function updateNotices(Request $request, $id)
+    {
+         try {
+            $notice = Notices::findOrFail($id);
+
+            $notice->update([
+                'title' => $request->input('title'),
+                'fechaPublicacion' => now(), 
+            ]);
+
+            return HttpResponseHelper::make()
+            ->successfulResponse($notice->wasChanged() ? 
             'Los datos se actualizaron correctamente.' : 'NO se realizaron cambios.')
             ->send();
 
@@ -82,10 +106,11 @@ class NoticesController extends Controller
          }
     }
 
-    public function destroyNotices(Notices $notices)
+    public function destroyNotices($id)
     {
         try {
-            $notices->delete();
+            $notice = Notices::findOrFail($id);
+            $notice->delete();
 
             return HttpResponseHelper::make()
             ->successfulResponse('La noticia se elimino correctamente.')
