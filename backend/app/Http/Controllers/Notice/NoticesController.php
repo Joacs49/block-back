@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PostNotice\PostNotices;
 use App\Models\Notices;
 use App\Traits\HttpResponseHelper;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class NoticesController extends Controller
@@ -91,7 +92,7 @@ class NoticesController extends Controller
 
             $notice->update([
                 'title' => $request->input('title'),
-                'fechaPublicacion' => now(), 
+                'fechaPublicacion' => Carbon::now(), 
             ]);
 
             return HttpResponseHelper::make()
